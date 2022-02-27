@@ -17,11 +17,10 @@
 - Now set up an Environment here: https://developer.twitter.com/en/account/environments
 - Select 30 Days, select your lable and set that label in the download_videos.toml file.
 (If you have access to a paid subscription, you can also register your environment as fullarchive)
-
--- Optional:
-- You can gain elevated API access by applying in your developer dashboard: https://developer.twitter.com/en/portal/dashboard
+- You can gain elevated API access by applying in your developer dashboard. The option to apply should be on the right: https://developer.twitter.com/en/portal/dashboard
+- Applying is easy, just fill out the form and get approved. The approval process is usually automatic, so it will be done VERY quickly, unless twitter decides you seem suspicious.
 - This will get you a range of privileges, listed here: https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
-
+- One of these is access to the Twitter API v1.1 endpoints, which the TwitterAPI python library uses, so this is required.
 
 # Installation/Usage:
 0. Do the steps laid out in the Prerequisites Section.
