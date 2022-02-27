@@ -1,4 +1,4 @@
-# Video
+# Vid-IO
 - Twitter Video Scraper using the Twitter API and Python
 
 # General Information
