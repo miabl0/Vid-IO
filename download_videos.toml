@@ -1,12 +1,13 @@
 consumer_key = ''
 consumer_secret = ''
+
 access_token_key = ''
 access_token_secret = ''
+
+product = '30day'
+label = 'myLabel'
 
 video_download_location = "./out/videos/"
 tweettext_download_location = "./out/tweettext/"
 
 search_query = '(#UkraineWar OR #UkraineUnderAttack OR #UkraineRussiaWar OR #UkraineInvasion OR #SlavaUkraini OR #Kiev OR  #Kyiv OR #Kharkiv OR #Kharkov OR #Kherson OR #Obolon OR #Brovary OR Kyiv OR Kharkiv OR Kharkov OR Kherson OR Obolon OR Brovary) has:videos'
-
-product = '30day'
-label = 'myLabel'

@@ -68,21 +68,23 @@ def downloadFromTwitterAPI():
                 if os.path.isfile(textpath) == False:
                     print(url)
                     print(username)
-                    ydl_opts = {"outtmpl": os.path.join(video_download_location,id_str)}
+                    ydl_opts = {"outtmpl": os.path.join(video_download_location,id_str + ".mp4")}
                     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                         ret = ydl.download([url])
                     
-                    with open(os.path.join(video_download_location,id_str), 'rb') as afile:
+                    with open(os.path.join(video_download_location,id_str+ ".mp4"), 'rb') as afile:
                         buf = afile.read()
                         hasher.update(buf)
                     hashVal = (hasher.hexdigest())
                     if hashVal in filehashes:
-                        os.remove(os.path.join(video_download_location,id_str))
+                        os.remove(os.path.join(video_download_location,id_str + ".mp4"))
                     else:
                         filehashes.append(hashVal)
-                        with(open(os.path.join(tweettext_download_location,id_str), 'w+')) as f:
+                        with(open(os.path.join(tweettext_download_location,id_str + ".txt"), 'w+')) as f:
+                            f.write(url)
                             f.write(item['text'])
                             f.write(item['user']['name'])
+                            f.write(item['user']['screen_name'])
                             filenames.append(id_str)
                         
             with(open(os.path.join(dir_path,"response.txt"), 'a+')) as f:
