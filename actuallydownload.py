@@ -1,5 +1,4 @@
 import pandas as pd
-import twitter_video_download as twdl
 import time
 import os
 import pandas as pd
@@ -11,6 +10,7 @@ import tomli
 from requests_oauthlib import OAuth1
 import urllib.request
 import urllib.error
+import youtube_dl
 #can apphend date to metadata File
 #maybe to filename too
 #add 
@@ -68,34 +68,22 @@ def downloadFromTwitterAPI():
                 if os.path.isfile(textpath) == False:
                     print(url)
                     print(username)
-                    try:
-                        val = twdl.download_video(video_url=url,file_name=(os.path.join(video_download_location,id_str)))
-                        
-                        with open(os.path.join(video_download_location,id_str), 'rb') as afile:
-                            buf = afile.read()
-                            hasher.update(buf)
-                        hashVal = (hasher.hexdigest())
-                        if hashVal in filehashes:
-                            os.remove(os.path.join(video_download_location,id_str))
-                        else:
-                            filehashes.append(hashVal)
-                            with(open(os.path.join(tweettext_download_location,id_str), 'w+')) as f:
-                                f.write(item['text'])
-                                f.write(item['user']['name'])
-                                filenames.append(id_str)
-        
-                    except AssertionError:
-                        print("did not find video")
-                        print("trying manual download")
-                        print(str(item))
-                        #try:
-                            #print(item['retweeted_status']['extended_entities']['media']['video_info url'])
-                            #rsp = urllib.request.urlopen(item['retweeted_status']['extended_entities']['media']['video_info url'])
-                            #with open(os.path.join(video_download_location, id_str),'wb') as f:
-                                #f.write(rsp.read())
-                        #except urllib.error.URLError:
-                            #print("Could not manually download video")
-                            #print(str(item))
+                    ydl_opts = {"outtmpl": os.path.join(video_download_location,id_str)}
+                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                        ret = ydl.download([url])
+                    
+                    with open(os.path.join(video_download_location,id_str), 'rb') as afile:
+                        buf = afile.read()
+                        hasher.update(buf)
+                    hashVal = (hasher.hexdigest())
+                    if hashVal in filehashes:
+                        os.remove(os.path.join(video_download_location,id_str))
+                    else:
+                        filehashes.append(hashVal)
+                        with(open(os.path.join(tweettext_download_location,id_str), 'w+')) as f:
+                            f.write(item['text'])
+                            f.write(item['user']['name'])
+                            filenames.append(id_str)
                         
             with(open(os.path.join(dir_path,"response.txt"), 'a+')) as f:
                 f.write(str(r.json()))
