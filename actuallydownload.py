@@ -1,3 +1,4 @@
+from asyncore import write
 import pandas as pd
 import time
 import os
@@ -7,13 +8,9 @@ import hashlib
 import sys
 import signal
 import tomli
-from requests_oauthlib import OAuth1
-import urllib.request
-import urllib.error
 import youtube_dl
-#can apphend date to metadata File
-#maybe to filename too
-#add 
+import csv
+import collections
 
 
 #Global variables
@@ -21,8 +18,15 @@ filehashes = ['empty']
 filenames = ['empty']
 dir_path = os.path.dirname(os.path.abspath(__file__))
 
-
-
+def flatten(d, parent_key='', sep='_'):
+    items = []
+    for k, v in d.items():
+        new_key = parent_key + sep + k if parent_key else k
+        if isinstance(v, collections.MutableMapping):
+            items.extend(flatten(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
 
 def downloadFromTwitterAPI():
     hasher = hashlib.md5()
@@ -80,12 +84,22 @@ def downloadFromTwitterAPI():
                         os.remove(os.path.join(video_download_location,id_str + ".mp4"))
                     else:
                         filehashes.append(hashVal)
-                        with(open(os.path.join(tweettext_download_location,id_str + ".txt"), 'w+')) as f:
-                            f.write(url)
-                            f.write(item['text'])
-                            f.write(item['user']['name'])
-                            f.write(item['user']['screen_name'])
-                            filenames.append(id_str)
+                    #Append existing metadata
+                    if os.path.isfile(os.path.join(tweettext_download_location, id_str + ".csv")):
+                        with open(os.path.join(tweettext_download_location, id_str + ".csv"), 'r+') as f:
+                            writeDict= flatten(item)
+                            reader = csv.DictReader(f)
+                            write_obj = [writeDict, write_obj]
+                            writer = csv.DictWriter(f, fieldnames=writeDict.keys())
+                            writer.writeheader()
+                            writer.writerows(write_obj)
+                    #Create new metadata file
+                    else:
+                        with(open(os.path.join(tweettext_download_location,id_str + ".csv"), 'w+')) as f:
+                            writeDict= flatten(item)
+                            writer = csv.DictWriter(f, fieldnames=writeDict.keys())
+                            writer.writeheader()
+                            writer.writerow(writeDict)
                         
             with(open(os.path.join(dir_path,"response.txt"), 'a+')) as f:
                 f.write(str(r.json()))
